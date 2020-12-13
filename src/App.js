@@ -1,34 +1,39 @@
-import React, { Component } from 'react'
-import './index.css'
+import React, {Component} from 'react'
 import Table from './Table'
+import Form from './Form'
 
 class App extends Component {
   state = {
-    characters: []
+   messages: []
+  };
+  
+  removeMessage = index => {
+    const { messages } = this.state;
+    
+    this.setState({
+      messages: messages.filter((message, i) => { 
+        return i !== index;
+      })
+    });
   }
-
+  
+  handleSubmit = (message) => {
+	this.setState({messages: [...this.state.messages, message]})
+  }
+  
   render() {
+    const { messages } = this.state;
 
-    const { characters } = this.state
-    return (
-      <div className="container">
-        <Table characterData={characters} removeCharacter={this.removeCharacter} />
+	return (
+	  <div className="container">
+        <h1>Chatting</h1>
+        <Table
+          messagesData={messages}
+          removeMessage={this.removeMessage}
+        />
+        <Form handleSubmit={this.handleSubmit} />
       </div>
-    )
+	)
   }
-
-  removeCharacter = (index) => {
-    const { characters } = this.state
-
-    this.setState(
-      {
-        characters:characters.filter((character, i) => {
-          return i !== index
-        }),
-      }
-    )
-  }
-
 }
-
 export default App
