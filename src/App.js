@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Table from './Table'
 import Form from './Form'
-
+import Example from './Example'
 class App extends Component {
   state = {
    messages: []
@@ -24,16 +24,17 @@ class App extends Component {
   render() {
     const { messages } = this.state;
 
-	return (
-	  <div className="container">
+	  return (
+	    <div className="container">
         <h1>Chatting</h1>
+        <Example />
         <Table
           messagesData={messages}
           removeMessage={this.removeMessage}
         />
         <Form handleSubmit={this.handleSubmit} />
       </div>
-	)
+	  )
   }
 }
 export default App
