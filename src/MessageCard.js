@@ -3,11 +3,13 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button'
 import {useState} from 'react'
+import { Container } from 'react-bootstrap';
 
 function MessageToast () {
     const [show, setShow] = useState(false);
 
     return (
+    <Container>
       <Row>
         <Col xs={6}>
           <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
@@ -27,6 +29,7 @@ function MessageToast () {
           <Button onClick={() => setShow(true)}>message</Button>
         </Col>
       </Row>
+      </Container>
     );
 }
 
