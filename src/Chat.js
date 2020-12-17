@@ -2,7 +2,9 @@ import React, {Component} from 'react'
 import Table from './Table'
 import Form from './Form'
 import Example from './Example'
-class App extends Component {
+import MessageCard from './MessageCard';
+
+class Chat extends Component {
   state = {
    messages: []
   };
@@ -28,6 +30,7 @@ class App extends Component {
 	    <div className="container">
         <h1>Chatting</h1>
         <Example />
+        <MessageCard />
         <Table
           messagesData={messages}
           removeMessage={this.removeMessage}
@@ -37,4 +40,4 @@ class App extends Component {
 	  )
   }
 }
-export default App
+export default Chat
