@@ -30,7 +30,6 @@ class Chat extends Component {
 	    <div className="container">
         <h1>Chatting</h1>
         <Example />
-        <MessageCard />
         <Table
           messagesData={messages}
           removeMessage={this.removeMessage}

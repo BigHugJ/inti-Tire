@@ -1,13 +1,14 @@
 import React, {Component} from 'react'
 import Chat from './Chat';
+import Button from 'react-bootstrap/Button'
 
 function LoginButton(props) {
     return (
         <div>
-        <h1>Welcome</h1>
-        <button onClick={props.onClick}> 
-        Login 
-        </button></div>
+        <h1>鸿雁之笺</h1>
+        <Button onClick={props.onClick}> 
+            Login 
+        </Button></div>
     );
 }
 

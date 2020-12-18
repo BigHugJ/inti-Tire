@@ -5,35 +5,36 @@ import Button from 'react-bootstrap/Button'
 import {useState} from 'react'
 import { Container } from 'react-bootstrap';
 
-function MessageToast () {
+function MessageToast (props) {
     const [show, setShow] = useState(false);
+    const message = props.message;
 
     return (
     <Container>
       <Row>
-        <Col xs={6}>
-          <Toast onClose={() => setShow(false)} show={show} delay={3000} autohide>
+        <Col xs={236}>
+          <Toast onClose={() => setShow(false)} show={show} delay={4000} autohide>
             <Toast.Header>
               <img
                 src="holder.js/20x20?text=%20"
                 className="rounded mr-2"
                 alt=""
               />
-              <strong className="mr-auto">flying message</strong>
+              <strong >f-message</strong>
               <small>{new Date().toLocaleString()}</small>
             </Toast.Header>
-            <Toast.Body>给你看几秒钟啦!</Toast.Body>
+            <Toast.Body>{message}</Toast.Body>
           </Toast>
         </Col>
-        <Col xs={6}>
-          <Button onClick={() => setShow(true)}>message</Button>
+        <Col xs={16}>
+          <Button onClick={() => setShow(true)}>check</Button>
         </Col>
       </Row>
       </Container>
     );
 }
 
-const MessageCard = () => {
-    return (<MessageToast />)
+const MessageCard = (props) => {
+    return (<MessageToast message={props.message}/>)
 }
 export default MessageCard;

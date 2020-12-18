@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Button from 'react-bootstrap/Button'
 
 class Form extends Component {
   initialState = {
@@ -35,7 +36,7 @@ class Form extends Component {
           value={message} 
           onChange={this.handleChange}/>
 		  
-        <button type="submit">send</button>
+        <Button type="submit">send</Button>
       </form>
     )
   }

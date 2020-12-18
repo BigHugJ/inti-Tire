@@ -1,4 +1,5 @@
 import React from 'react';
+import MessageCard from './MessageCard'
 
 const TableHeader = () => { 
   return (
@@ -15,9 +16,7 @@ const TableBody = props => {
   const rows = props.messagesData.map((row, index) => {
     return (
       <tr key={index}>
-        <td>{row.message}</td>
-        <td>{row.sender}</td>
-        <td><button onClick={() => props.removeMessage(index)}>Del</button></td>
+        <td><MessageCard message={row.message}/></td>
       </tr>
     );
   });
