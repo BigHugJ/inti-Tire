@@ -1,14 +1,18 @@
 import React, {Component} from 'react'
 import Chat from './Chat';
-import Button from 'react-bootstrap/Button'
-
+import {Container, Button, Jumbotron} from 'react-bootstrap'
+import './App.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 function LoginButton(props) {
     return (
-        <div>
-        <h1>鸿雁之笺</h1>
-        <Button onClick={props.onClick}> 
+        <Container className="header">
+          <Jumbotron >
+		  <h1>鸿雁之笺</h1>
+          <Button onClick={props.onClick}> 
             Login 
-        </Button></div>
+          </Button>
+		  </Jumbotron>
+		</Container>
     );
 }
 
