@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import Table from './Table'
-import Form from './Form'
+import MessageEditor from './Form'
 import Example from './Example'
 import MessageCard from './MessageCard'
 import {Container, Button, Jumbotron, Row, Col} from 'react-bootstrap'
@@ -43,7 +43,7 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-5">
 			  <Col>
-				<Form handleSubmit={this.handleSubmit} />
+				<MessageEditor handleSubmit={this.handleSubmit} />
 			  </Col>
 			</Row>
 			<Row className="mb-1">
