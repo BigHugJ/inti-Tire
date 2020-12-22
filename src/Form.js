@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import Button from 'react-bootstrap/Button'
+import {Form, Button} from 'react-bootstrap'
 
-class Form extends Component {
+class MessageEditor extends Component {
   initialState = {
     message: '',
     sender: 'Me'
@@ -28,18 +28,18 @@ class Form extends Component {
     const {message} = this.state; 
 
     return (
-      <form onSubmit={this.onFormSubmit}>
-        <input  
-          type= "text" 
-          name= "message" 
+	  <Form onSubmit={this.onFormSubmit}>
+		<Form.Group id="message">
+		  <Form.Control size="sm" as="textarea" name= "message" 
           id= "name"
-          value={message} 
-          onChange={this.handleChange}/>
-		  
-        <Button type="submit">send</Button>
-      </form>
+          value={message}  onChange={this.handleChange}/>
+		</Form.Group>
+		<Button variant="primary" type="submit">
+		  Submit
+		</Button>
+	  </Form>
     )
   }
 }
 
-export default Form;
+export default MessageEditor;
