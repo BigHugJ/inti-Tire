@@ -34,7 +34,7 @@ class MessageEditor extends Component {
           id= "name"
           value={message}  onChange={this.handleChange}/>
 		</Form.Group>
-		<Button variant="primary" type="submit">
+		<Button variant="primary" type="submit" disabled={!this.state.message}>
 		  Submit
 		</Button>
 	  </Form>
