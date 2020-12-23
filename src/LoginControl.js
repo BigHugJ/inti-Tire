@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React from 'react'
 import Chat from './Chat';
 import {Container, Button, Jumbotron} from 'react-bootstrap'
 import './App.css'

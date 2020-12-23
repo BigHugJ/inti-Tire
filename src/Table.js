@@ -1,6 +1,6 @@
 import React from 'react';
 import MessageCard from './MessageCard'
-import {Container, Row, Col, Accordion} from 'react-bootstrap' 
+import {Accordion} from 'react-bootstrap' 
 
 const TableBody = props => { 
   const rows = props.messagesData.map((row, index) => {

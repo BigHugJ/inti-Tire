@@ -1,6 +1,4 @@
-import Toast from 'react-bootstrap/Toast';
-import Button from 'react-bootstrap/Button'
-import { Container, Accordion, Card } from 'react-bootstrap'
+import { Accordion, Card } from 'react-bootstrap'
 import {useAccordionToggle} from 'react-bootstrap'
 
 function CustomToggle({ children, eventKey }) {

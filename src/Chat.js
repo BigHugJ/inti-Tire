@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
 import Table from './Table'
 import MessageEditor from './Form'
-import Example from './Example'
-import MessageCard from './MessageCard'
-import {Container, Button, Jumbotron, Row, Col} from 'react-bootstrap'
+import {Container, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
 
 class Chat extends Component {
