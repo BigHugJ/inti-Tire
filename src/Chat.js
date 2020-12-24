@@ -41,7 +41,7 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-5">
 			  <Col>
-				<MessageEditor handleSubmit={this.handleSubmit} />
+				<MessageEditor handleSubmit={this.handleSubmit}  />
 			  </Col>
 			</Row>
 			<Row className="mb-1">
