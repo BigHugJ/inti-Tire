@@ -36,7 +36,7 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters unreaded = '10' totalMessages = '11'/>
+				<Counters unreaded = '10' totalMessages = '11' />
 			  </Col>
 			</Row>
 			<Row className="mb-5">
