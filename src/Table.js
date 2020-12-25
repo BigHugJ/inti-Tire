@@ -2,28 +2,30 @@ import React from 'react';
 import MessageCard from './MessageCard'
 import {Container, Row, Col, Accordion} from 'react-bootstrap' 
 import Table from 'react-bootstrap/Table'
-
+import Image from 'react-bootstrap/Image'
 const TableBody = props => { 
 
   const rows = props.messagesData.map((row, index) => {
     if (row.sender === 'Me')
 	  return (
-	    <tr>
+	    <tr style={{"text-align": "right"}}>
 		  <td></td>
-		  <td>{row.message}</td>
+		  <td style={{"background-color": " #33CCFF", "padding":"0px", "vertical-align": "middle"}}>{row.message}</td>
+		  <td style={{"width":"5%"}}><Image src="me.jpg" alt="Girl in a jacket" width="40px" height="40px" rounded /></td>
 	    </tr>
     )
 	else
 	  return (
 	    <tr>
-		  <td>{row.message}</td>
+		  <td style={{"width":"5%"}}><Image src="me.jpg" alt="Girl in a jacket" width="40px" height="40px" rounded /></td>
+		  <td style={{"background-color": "#00CCCC"}}>{row.message}</td>
 		  <td></td>
 	    </tr>
     )
 		
-  });
+  }).reverse();
 	
-  return <Table striped hover >{rows}</Table>;
+  return <Table hover borderless responsive  style={{"border-collapse": "separate", "padding": "0px"}}>{rows}</Table>;
 }
 
 const MessageTable = (props) => {
