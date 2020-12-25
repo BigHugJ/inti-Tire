@@ -5,7 +5,7 @@ import {Accordion} from 'react-bootstrap'
 const TableBody = props => { 
   const rows = props.messagesData.map((row, index) => {
     return (
-	  <MessageCard message={row.message} eventIndex={index}/>
+	  <MessageCard message={row.message} eventIndex={index+1}/>
     );
   });
 
