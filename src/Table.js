@@ -3,15 +3,18 @@ import MessageCard from './MessageCard'
 import {Container, Row, Col, Accordion} from 'react-bootstrap' 
 import Table from 'react-bootstrap/Table'
 import Image from 'react-bootstrap/Image'
-const TableBody = props => { 
 
+const TableBody = (props) => { 
+  const lu = props.loginUser;
+  const imgName = lu+".jpg";
+  
   const rows = props.messagesData.map((row, index) => {
     if (row.sender === 'Me')
 	  return (
 	    <tr style={{"text-align": "right"}}>
 		  <td></td>
 		  <td style={{"background-color": " #33CCFF", "padding":"0px", "vertical-align": "middle"}}>{row.message}</td>
-		  <td style={{"width":"5%"}}><Image src="me.jpg" alt="Girl in a jacket" width="40px" height="40px" rounded /></td>
+		  <td style={{"width":"5%"}}><Image src={imgName} alt="user" width="40px" height="40px" rounded /></td>
 	    </tr>
     )
 	else
@@ -29,10 +32,10 @@ const TableBody = props => {
 }
 
 const MessageTable = (props) => {
-  const { messagesData, calculateMessagCount} = props;
+  const { messagesData, loginUser} = props;
 
   return (
-    <TableBody messagesData={messagesData} />  
+    <TableBody messagesData={messagesData} loginUser={loginUser} />  
   )
 }
 
