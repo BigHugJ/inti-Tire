@@ -33,29 +33,30 @@ class Chat extends Component {
   render() {
     const { messages } = this.state;
 	const messageCount = this.state.messages.length;
+	const loginUser = this.props.loginUser;
 	
 	  return (
-	    <Container className="mb-0">
-		  <Jumbotron >
-		    <Row >
+	    <Container className="mb-0" style={{"height":"100%"}}>
+		  <Jumbotron>
+		    <Row>
 			  <Col>
 				<h1>Chatting</h1>
 			  </Col>
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters unreaded = {messageCount} totalMessages = {messageCount}/>
+				<Counters loginUser = {loginUser} totalMessages = {messageCount}/>
 			  </Col>
 			</Row>
-			<Row className="mb-0">
+			<Row className="mb-0" >
 			  <Col>
 				<MessageEditor handleSubmit={this.handleSubmit} />
 			  </Col>
 			</Row>
-			<Row>
+			<Row style={{"margin-left":"10px"}}>
 			  <Col>
 				<MessageTable
-				  messagesData={messages}
+				  messagesData={messages} loginUser={loginUser}
 				/>
 			  </Col>
 			</Row>
