@@ -4,6 +4,14 @@ import {Container, Button, ButtonGroup, Jumbotron} from 'react-bootstrap'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Image from 'react-bootstrap/Image'
+import SockJS from "sockjs-client"
+import Stomp from "stompjs"
+import console from "react-console"
+
+var url = 'http://192.168.2.27/gs-guide-websocket';
+var options = {};
+var sockjs = new SockJS(url, /*_reserved*/null, options);
+var stompClient = Stomp.over(sockjs);
 
 function LoginButton(props) {
     return (
@@ -28,10 +36,17 @@ class LoginControl extends React.Component {
 			 };
 
     handleLoginClick = user => () => {
-        this.setState({isLoggedIn: true});
-		this.setState({loginUser: user});
-    };
+	  console.log("connecting...")
+	  stompClient.connect({}, this.connectionSuccess(user));
+    }
+	
+	connectionSuccess(user) {	  
+	  console.log("connected")
 
+	  this.setState({isLoggedIn: true});
+	  this.setState({loginUser: user});
+	}
+	
     render() {
 	const isLoggedIn = this.state.isLoggedIn;
 	const loginUser = this.state.loginUser
@@ -40,7 +55,7 @@ class LoginControl extends React.Component {
         if (!isLoggedIn)
             page = <LoginButton onClick={this.handleLoginClick} />
         else
-            page = <Chat loginUser={loginUser}/>
+            page = <Chat loginUser={loginUser} isLoggedIn={this.state.isLoggedIn} />
 
         return (
             <div>
