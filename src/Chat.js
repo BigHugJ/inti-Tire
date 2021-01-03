@@ -8,8 +8,12 @@ import Counters from './Counter'
 
 class Chat extends Component {
   state = {
+   isConnected: false,
    messageCount: 0,
    messages: []
+  }
+  
+  componentWillMount () {
   }
   
   removeMessage = index => {
@@ -45,7 +49,7 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters loginUser = {loginUser} totalMessages = {messageCount}/>
+				<Counters loginUser = {loginUser} totalMessages = {messageCount} isLoggedIn={this.props.isLoggedIn}/>
 			  </Col>
 			</Row>
 			<Row className="mb-0" >
