@@ -1,13 +1,16 @@
 import React, {Component} from 'react'
-import Table from './Table'
+import MessageTable from './Table'
 import MessageEditor from './Form'
-import {Container, Jumbotron, Row, Col} from 'react-bootstrap'
+import Example from './Example'
+import MessageCard from './MessageCard'
+import {Container, Button, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
 
 class Chat extends Component {
   state = {
+   messageCount: 0,
    messages: []
-  };
+  }
   
   removeMessage = index => {
     const { messages } = this.state;
@@ -23,11 +26,16 @@ class Chat extends Component {
 	this.setState({messages: [...this.state.messages, message]})
   }
   
+  calculateMessagCount = (mCount) => {
+	this.setState({messageCount: mCount})
+  }
+  
   render() {
     const { messages } = this.state;
-
+	const messageCount = this.state.messages.length;
+	
 	  return (
-	    <Container >
+	    <Container className="mb-0">
 		  <Jumbotron >
 		    <Row >
 			  <Col>
@@ -36,19 +44,18 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters unreaded = '10' totalMessages = '11'/>
+				<Counters unreaded = {messageCount} totalMessages = {messageCount}/>
 			  </Col>
 			</Row>
-			<Row className="mb-5">
+			<Row className="mb-0">
 			  <Col>
 				<MessageEditor handleSubmit={this.handleSubmit} />
 			  </Col>
 			</Row>
-			<Row className="mb-1">
+			<Row>
 			  <Col>
-				<Table
+				<MessageTable
 				  messagesData={messages}
-				  removeMessage={this.removeMessage}
 				/>
 			  </Col>
 			</Row>

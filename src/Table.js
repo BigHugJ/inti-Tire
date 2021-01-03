@@ -1,22 +1,38 @@
 import React from 'react';
 import MessageCard from './MessageCard'
-import {Accordion} from 'react-bootstrap' 
+import {Container, Row, Col, Accordion} from 'react-bootstrap' 
+import Table from 'react-bootstrap/Table'
 
 const TableBody = props => { 
-  const rows = props.messagesData.map((row, index) => {
-    return (
-	  <MessageCard message={row.message} eventIndex={index+1}/>
-    );
-  });
 
-  return <Accordion>{rows}</Accordion>;
+  const rows = props.messagesData.map((row, index) => {
+
+    if (row.sender === 'Me')
+	  return (
+	    <tr>
+		  <td></td>
+		  <td>{row.message}</td>
+	    </tr>
+      )
+	else
+	  return (
+	    <tr>
+		  <td>{row.message}</td>
+		  <td></td>
+	    </tr>
+    )  
+  })
+
+  return <Table striped hover >{rows}</Table>;
+  
 }
 
-const Table = (props) => {
-  const { messagesData, removeMessage } = props;
+const MessageTable = (props) => {
+  const { messagesData} = props;
+
   return (
-    <TableBody messagesData={messagesData} removeMessage={removeMessage} />  
+    <TableBody messagesData={messagesData} />  
   )
 }
 
-export default Table
+export default MessageTable
