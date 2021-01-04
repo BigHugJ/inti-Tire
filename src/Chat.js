@@ -43,12 +43,12 @@ class Chat extends Component {
 		  <Jumbotron>
 		    <Row>
 			  <Col>
-	  			<h1>{isLoggedIn}</h1>
+	  			<h1>Chatting</h1>
 			  </Col>
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters loginUser = {loginUser} totalMessages = {messageCount} isLoggedIn={this.props.isLoggedIn}/>
+				<Counters loginUser={loginUser} totalMessages={messageCount} isLoggedIn={this.props.isLoggedIn}/>
 			  </Col>
 			</Row>
 			<Row className="mb-0" >
