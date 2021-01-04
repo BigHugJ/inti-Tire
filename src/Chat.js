@@ -1,17 +1,15 @@
 import React, {Component} from 'react'
 import MessageTable from './Table'
 import MessageEditor from './Form'
-import {Container, Button, Jumbotron, Row, Col} from 'react-bootstrap'
+import {Container, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
+import console from "react-console"
 
 class Chat extends Component {
   state = {
    isConnected: false,
    messageCount: 0,
    messages: []
-  }
-  
-  componentWillMount () {
   }
   
   removeMessage = index => {
@@ -36,19 +34,19 @@ class Chat extends Component {
     const { messages } = this.state;
 	const messageCount = this.state.messages.length;
 	const loginUser = this.props.loginUser;
-	const isLoggedIn = this.props.isLoggedIn;
-
+	const isLoggedIn = this.props.isLoggedIn
+	
 	  return (
 	    <Container className="mb-0" style={{"height":"100%"}}>
 		  <Jumbotron>
 		    <Row>
 			  <Col>
-	  			<h1>Chatting</h1>
+				<h1>Chatting</h1>
 			  </Col>
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters loginUser={loginUser} totalMessages={messageCount} isLoggedIn={this.props.isLoggedIn}/>
+				<Counters loginUser = {loginUser} totalMessages = {messageCount} isLoggedIn={isLoggedIn} />
 			  </Col>
 			</Row>
 			<Row className="mb-0" >
