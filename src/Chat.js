@@ -1,15 +1,17 @@
 import React, {Component} from 'react'
 import MessageTable from './Table'
 import MessageEditor from './Form'
-import Example from './Example'
-import MessageCard from './MessageCard'
 import {Container, Button, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
 
 class Chat extends Component {
   state = {
+   isConnected: false,
    messageCount: 0,
    messages: []
+  }
+  
+  componentWillMount () {
   }
   
   removeMessage = index => {
@@ -33,29 +35,31 @@ class Chat extends Component {
   render() {
     const { messages } = this.state;
 	const messageCount = this.state.messages.length;
-	
+	const loginUser = this.props.loginUser;
+	const isLoggedIn = this.props.isLoggedIn;
+
 	  return (
-	    <Container className="mb-0">
-		  <Jumbotron >
-		    <Row >
+	    <Container className="mb-0" style={{"height":"100%"}}>
+		  <Jumbotron>
+		    <Row>
 			  <Col>
-				<h1>Chatting</h1>
+	  			<h1>{isLoggedIn}</h1>
 			  </Col>
 			</Row>
 			<Row className="mb-2">
 			  <Col>
-				<Counters unreaded = {messageCount} totalMessages = {messageCount}/>
+				<Counters loginUser = {loginUser} totalMessages = {messageCount} isLoggedIn={this.props.isLoggedIn}/>
 			  </Col>
 			</Row>
-			<Row className="mb-0">
+			<Row className="mb-0" >
 			  <Col>
 				<MessageEditor handleSubmit={this.handleSubmit} />
 			  </Col>
 			</Row>
-			<Row>
+			<Row style={{"margin-left":"10px"}}>
 			  <Col>
 				<MessageTable
-				  messagesData={messages}
+				  messagesData={messages} loginUser={loginUser}
 				/>
 			  </Col>
 			</Row>
