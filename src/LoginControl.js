@@ -6,9 +6,11 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Image from 'react-bootstrap/Image'
 import SockJS from "sockjs-client"
 import Stomp from "stompjs"
+import console from "react-console"
 
-var url = 'http://localhost:8080/gs-guide-websocket';
-var options = {};
+var url = 'http://192.168.2.27:8080/gs-guide-websocket';
+var options = {host:'192.168.2.27',
+			   oringin:'192.168.2.35'};
 var sockjs = new SockJS(url, /*_reserved*/null, options);
 var stompClient = Stomp.over(sockjs);
 
@@ -33,33 +35,30 @@ class LoginControl extends React.Component {
     state = {isLoggedIn: false,
 			 loginUser:''
 			 };
-	
+
     handleLoginClick = user => () => {
 	  console.log("connecting...")
 	  stompClient.connect({}, this.connectionSuccess(user));
     }
 	
-	connectionSuccess = (user) => () => {	  
+	connectionSuccess(user) {	  
 	  console.log("connected")
 
 	  this.setState({isLoggedIn: true});
 	  this.setState({loginUser: user});
-
-	  console.log(this.state.isLoggedIn)
-	  console.log(this.state.loginUser)
-
 	}
 	
     render() {
-	const isLoggedIn = this.state.isLoggedIn;
-	const loginUser = this.state.loginUser
+	  const isLoggedIn = this.state.isLoggedIn;
+	  const loginUser = this.state.loginUser
+	
         let page;
 
         if (!isLoggedIn)
-            page = <LoginButton onClick={this.handleLoginClick} />
-        else
-            page = <Chat loginUser={loginUser} isLoggedIn={isLoggedIn} />
-
+          page = <LoginButton onClick={this.handleLoginClick} />
+        else {
+          page = <Chat loginUser={loginUser} isLoggedIn={isLoggedIn} />
+		}
         return (
             <div>
                 {page}
