@@ -3,7 +3,6 @@ import MessageTable from './Table'
 import MessageEditor from './Form'
 import {Container, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
-import console from "react-console"
 
 class Chat extends Component {
   state = {
@@ -34,8 +33,9 @@ class Chat extends Component {
     const { messages } = this.state;
 	const messageCount = this.state.messages.length;
 	const loginUser = this.props.loginUser;
-	const isLoggedIn = this.props.isLoggedIn
-	
+	const isLoggedIn = this.props.isLoggedIn;
+	const sendMessage = this.props.sendMessage;
+
 	  return (
 	    <Container className="mb-0" style={{"height":"100%"}}>
 		  <Jumbotron>
@@ -51,7 +51,7 @@ class Chat extends Component {
 			</Row>
 			<Row className="mb-0" >
 			  <Col>
-				<MessageEditor handleSubmit={this.handleSubmit} />
+				<MessageEditor handleSubmit={this.handleSubmit} sendMessage={this.props.sendMessage}/>
 			  </Col>
 			</Row>
 			<Row style={{"margin-left":"10px"}}>

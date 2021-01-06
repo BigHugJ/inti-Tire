@@ -1,5 +1,4 @@
 import Badge from 'react-bootstrap/Badge'
-import console from "react-console"
 
 function CounterBadge (props) {
 	const User = props.loginUser
