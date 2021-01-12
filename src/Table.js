@@ -1,22 +1,45 @@
 import React from 'react';
-import MessageCard from './MessageCard'
-import {Accordion} from 'react-bootstrap' 
+import Table from 'react-bootstrap/Table'
+import Image from 'react-bootstrap/Image'
 
-const TableBody = props => { 
+const TableBody = (props) => {
+  const lu = props.loginUser;
+  const senderName = lu + ".jpg";
+  
   const rows = props.messagesData.map((row, index) => {
     return (
 	  <MessageCard message={row.message} eventIndex={index+1}/>
     );
   });
 
-  return <Accordion>{rows}</Accordion>;
+    if (row.messageSender === props.loginUser)
+	  return (
+	    <tr key={row.id} style={{ "textAlign": "right" }}>
+		  <td></td>
+		  <td >{row.message}</td>
+		  <td style={{ "width": "5%" }}><Image src={senderName} alt="sender" width="40px" height="40px" rounded /></td>
+	    </tr>
+	  )
+    else {
+	  const senderName= row.messageSender + ".jpg"
+	  return (
+	    <tr key={row.id} >
+		  <td style={{ "width": "5%" }}><Image src={senderName} alt="receiver" width="40px" height="40px" rounded /></td>
+		  <td >{row.message}</td>
+		  <td></td>
+	    </tr>
+	  )
+    }
+  }).reverse();
+
+  return <Table ><tbody>{rows}</tbody></Table>;
+}
+const MessageTable = (props) => {
+	const { messagesData, loginUser } = props;
+
+	return (
+		<TableBody messagesData={messagesData} loginUser={loginUser} />
+	)
 }
 
-const Table = (props) => {
-  const { messagesData, removeMessage } = props;
-  return (
-    <TableBody messagesData={messagesData} key={props.index} removeMessage={removeMessage} />  
-  )
-}
-
-export default Table
+export default MessageTable
