@@ -7,6 +7,10 @@ const TableBody = (props) => {
   const senderName = lu + ".jpg";
   
   const rows = props.messagesData.map((row, index) => {
+    return (
+	  <MessageCard message={row.message} eventIndex={index+1}/>
+    );
+  });
 
     if (row.messageSender === props.loginUser)
 	  return (
@@ -30,7 +34,6 @@ const TableBody = (props) => {
 
   return <Table ><tbody>{rows}</tbody></Table>;
 }
-
 const MessageTable = (props) => {
 	const { messagesData, loginUser } = props;
 
