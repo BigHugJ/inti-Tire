@@ -110,7 +110,7 @@ class Chat extends Component {
 			</Row>
 			<Row key='3' className="mb-0" >
 			  <Col>
-				<MessageEditor handleSubmit={this.handleSubmit} sendMessage={this.sendMessage}/>
+				  <MessageEditor handleSubmit={this.handleSubmit} sendMessage={this.sendMessage}/>
 			  </Col>
 			</Row>
 			<Row key='4'>
