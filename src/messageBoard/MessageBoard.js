@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {Button,Card,ListGroup} from 'react-bootstrap'
-import SunEditor from 'suneditor-react';
+import SunEditor,{buttonList} from 'suneditor-react';
 import 'suneditor/dist/css/suneditor.min.css'; // Import Sun Editor's CSS File
 import { connect } from "react-redux";
 import {actionCreator} from './store';
@@ -12,7 +12,8 @@ class MessageBoard extends React.Component{
 	
 		getCardItem(){
 			return this.props.list.map((item,index) =>{
-			return <div key={index}><Card style={{width: '18rem',borderColor:'#C0C0C0'}}>
+			return <div class="cardStyle" key={index}>
+			<Card >
 			<Card.Body>
 			<Card.Subtitle className="mb-2 text-muted">
 				<div style={{color:'##007bff'}} >From Jenny: 
@@ -35,9 +36,13 @@ class MessageBoard extends React.Component{
 			<div>
 					{this.getCardItem()}
 				 <br/>
-				   <SunEditor setContents={inputValue} onChange={this.props.handleEditorChange}/>
+				
+				 <br/>
+				   <SunEditor setOptions={{
+						buttonList: buttonList.complex
+				}} setContents={inputValue} onChange={this.props.handleEditorChange}/>
 				   <br/>
-				   <Button onClick={this.props.handleSubmit} >post</Button>
+				   <Button onClick={this.props.handleSubmit} >post</Button>&nbsp;&nbsp;
 			</div>
 		);
 	}
