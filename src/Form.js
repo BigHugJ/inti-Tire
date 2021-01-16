@@ -21,7 +21,6 @@ class MessageEditor extends Component {
     event.preventDefault();
         
     this.props.handleSubmit(this.state);
-    console.log(this.state.message)
     this.props.sendMessage(this.state.message);
 
     this.setState(this.initialState);

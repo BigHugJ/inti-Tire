@@ -3,35 +3,32 @@ import Table from 'react-bootstrap/Table'
 import Image from 'react-bootstrap/Image'
 
 const TableBody = (props) => {
-	const lu = props.loginUser;
-	const imgName = lu + ".jpg";
+  const lu = props.loginUser;
+  const senderName = lu + ".jpg";
+  
+  const rows = props.messagesData.map((row, index) => {
 
-	const rows = props.messagesData.map((row, index) => {
+    if (row.messageSender === props.loginUser)
+	  return (
+	    <tr key={row.id} style={{ "textAlign": "right" }}>
+		  <td></td>
+		  <td >{row.message}</td>
+		  <td style={{ "width": "5%" }}><Image src={senderName} alt="sender" width="40px" height="40px" rounded /></td>
+	    </tr>
+	  )
+    else {
+	  const senderName= row.messageSender + ".jpg"
+	  return (
+	    <tr key={row.id} >
+		  <td style={{ "width": "5%" }}><Image src={senderName} alt="receiver" width="40px" height="40px" rounded /></td>
+		  <td >{row.message}</td>
+		  <td></td>
+	    </tr>
+	  )
+    }
+  }).reverse();
 
-		if (row.sender === 'Me')
-			return (
-				<tbody>
-					<tr style={{ "text-align": "right" }}>
-						<td></td>
-						<td style={{ "background-color": " #33CCFF", "padding": "0px", "vertical-align": "middle" }}>{row.message}</td>
-						<td style={{ "width": "5%" }}><Image src={imgName} alt="user" width="40px" height="40px" rounded /></td>
-					</tr>
-				</tbody>
-			)
-		else
-			return (
-				<tbody>
-					<tr>
-						<td style={{ "width": "5%" }}><Image src="me.jpg" alt="Girl in a jacket" width="40px" height="40px" rounded /></td>
-						<td style={{ "background-color": "#00CCCC" }}>{row.message}</td>
-						<td></td>
-					</tr>
-				</tbody>
-			)
-
-	}).reverse();
-
-	return <Table hover borderless responsive style={{ "border-collapse": "separate", "padding": "0px" }}>{rows}</Table>;
+  return <Table ><tbody>{rows}</tbody></Table>;
 }
 
 const MessageTable = (props) => {
