@@ -1,4 +1,4 @@
-import Badge from 'react-bootstrap/Badge'
+import {Badge, Button} from 'react-bootstrap'
 
 const OnlineButtons = (props) => {
   console.log("online people:")
@@ -6,8 +6,8 @@ const OnlineButtons = (props) => {
     console.log(props.receivers)
 
     const rs =props.receivers.map((receiver, index) => {
-	  console.log(receiver)
-	  return <Badge pill variant="primary">{receiver}</Badge>
+	  console.log("OnlineButtons:"+receiver)
+	  return <Button pill variant="link" size="sm" onClick={props.connectToReceiver(receiver)}>{receiver}</Button>
     })
   
     return rs
@@ -31,7 +31,7 @@ const CounterBadge = (props) => {
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
 		  <Badge pill variant="primary">You: {User}</Badge>{' '}
 		  <Badge pill variant="primary">online: </Badge>{' '}
-		  <OnlineButtons receivers={receivers} />
+		  <OnlineButtons receivers={receivers} connectToReceiver={props.connectToReceiver} />
 		</div>
 	  )
 	else 
@@ -40,7 +40,7 @@ const CounterBadge = (props) => {
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
 		  <Badge pill variant="danger">You: {User}</Badge>{' '}
 		  <Badge pill variant="primary">receivers: </Badge>
-		  <OnlineButtons receivers={receivers} />
+		  <OnlineButtons receivers={receivers} connectToReceiver={props.connectToReceiver} />
 		</div>
 	  )
 		
@@ -49,7 +49,7 @@ const CounterBadge = (props) => {
 const Counters = (props) => {
   const { totalMessages, loginUser, isLoggedIn, receivers } = props;
   return (
-	<CounterBadge totalMessages={totalMessages} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers}/>
+	<CounterBadge totalMessages={totalMessages} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers} connectToReceiver={props.connectToReceiver}/>
   )
 }
 export default Counters;
