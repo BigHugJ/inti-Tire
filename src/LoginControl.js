@@ -1,9 +1,9 @@
 import React from 'react'
+import Chat from './Chat';
 import { Container, Button, Jumbotron } from 'react-bootstrap'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Image from 'react-bootstrap/Image'
-import MainTab from './MainTab'
 
 class LoginControl extends React.Component {
   constructor(props) {
@@ -52,8 +52,7 @@ class LoginControl extends React.Component {
       )
 	}
 	else {
-		console.log(this.state.loginUser);
-		return <MainTab loginUser={loginUser} isLoggedIn={isLoggedIn} sendMessage={this.sendMessage} />
+	  return <Chat loginUser={loginUser} isLoggedIn={isLoggedIn} sendMessage={this.sendMessage} />
 	}
   }
 }
