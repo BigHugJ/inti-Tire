@@ -14,3 +14,18 @@
 	margin:0px;
 	padding:0px;
 }
+.circular--squareP{
+    border-radius:50%!important;
+    overflow:hidden
+}
+.header{
+	white-space:nowrap;
+	
+}
+ul{
+	float:left;
+	color:white;
+	margin:0px;
+	padding-left:0px;
+	display:block;
+}

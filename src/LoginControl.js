@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Image from 'react-bootstrap/Image'
 import MainTab from './MainTab'
 import axios from 'axios';
-
+import { Router,Link, Route} from 'react-router-dom'
 
 
 class LoginControl extends React.Component {
@@ -16,7 +16,9 @@ class LoginControl extends React.Component {
 	  loginUser: '',
 	  show:false,
 	  list:[],
-	  loginUserAvatar:''
+	  loginUserAvatar:'',
+	  username:'',
+	  password:''
 	  
 	}
   }
@@ -28,13 +30,27 @@ class LoginControl extends React.Component {
 	  }
   
   handleLogin(){
-	  this.setState({ isLoggedIn: true });
+	  axios.get('../../data/userData.json', {
+			params: {
+				username: this.state.username,
+				password: this.state.password
+			}}
+	    ).then((res)=>{
+	    	 this.setState({ isLoggedIn: true });
+		})
   }
   hideLoginBox(){
 	  this.setState({ show: false });  
 	  
   }
- 
+  handlePasswordChange(e){
+	  this.setState({password:e.target.value});
+  }
+
+  handleUserNameChange(e){
+	  this.setState({username:e.target.value});
+  }
+  
   loginPanel ()  {
 	  return (
 		  <div  style={{display: 'flex',  justifyContent:'center', alignItems:'center'}}>
@@ -47,16 +63,16 @@ class LoginControl extends React.Component {
 	      		<p/> 
 	      		<InputGroup className="mr-sm-2">
 			      	<InputGroup.Prepend>
-			      		<InputGroup.Text>user name</InputGroup.Text>
+			      		<InputGroup.Text >user name</InputGroup.Text>
 			      	</InputGroup.Prepend>
-			      	<FormControl  className="mr-sm-2"/>
+			      	<FormControl onChange={(e)=>this.handleUserNameChange(e)}  className="mr-sm-2"/>
 			    </InputGroup>
 			    <br/>
 			    <InputGroup className="mr-sm-2">
 			    	<InputGroup.Prepend>
 			      		<InputGroup.Text>password</InputGroup.Text>
 			      	</InputGroup.Prepend>
-			      	<FormControl  type="password" className="mr-sm-2"/>
+			      	<FormControl  onChange={(e)=>this.handlePasswordChange(e)} type="password" className="mr-sm-2"/>
 			    </InputGroup>
 			    <br/>
 			    <Button variant="info" onClick={()=>this.handleLogin()}>Login</Button>	

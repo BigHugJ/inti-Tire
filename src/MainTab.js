@@ -2,9 +2,11 @@ import React, {Component} from 'react'
 import {Tabs, Tab,Nav} from 'react-bootstrap'
 import Chat from './Chat'
 import MessageBoard from './messageBoard/MessageBoard'
+import Header from './header'
 import { Provider } from 'react-redux'
 import store from './store/';
-import { Link, Route, BrowserRouter } from 'react-router-dom'
+import { Router,Link, Route, BrowserRouter } from 'react-router-dom'
+
 
 export default class MainTab extends React.Component{
 	constructor(props){
@@ -24,7 +26,13 @@ export default class MainTab extends React.Component{
 		const loginUser = this.props.loginUser;
 		const isLoggedIn = this.props.isLoggedIn;
 		return ( 
+				  
+				    
+				<div>
+				
+				<Header />
 				<div class="container">
+					
 					<br/>
 					  <Tabs variant="pills" 
 				            activeKey={this.state.key}
@@ -42,7 +50,7 @@ export default class MainTab extends React.Component{
 			                	</Provider>
 			                </Tab>
 			                </Tabs>
-	            </div>
+	            </div></div>
 	        )
 	}
 }
