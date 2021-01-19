@@ -16,14 +16,14 @@ class MessageBoard extends React.Component{
 			<Card >
 			<Card.Body>
 			<Card.Subtitle className="mb-2 text-muted">
-				<div style={{color:'##007bff'}} >From Jenny: 
-					<button type="button" class="close" aria-label="Close" key={index} onClick={this.props.handleItemDelete} >
+				<div style={{color:'##007bff'}} >From Jenny:&nbsp;&nbsp;&nbsp;{item.sentTime}
+					<button type="button" class="close" aria-label="Close" key={index} onClick={(e) => this.props.handleItemDelete(index)} >
 						<span aria-hidden="true">&times;</span>
 					</button>  
 				</div>
 			</Card.Subtitle>
 			<Card.Text>
-				<div dangerouslySetInnerHTML = {{ __html: item }} />
+				<div dangerouslySetInnerHTML = {{ __html: item.content }} />
 			</Card.Text>
 		</Card.Body>
 			</Card></div>
@@ -66,14 +66,14 @@ const mapDispatchToProps = (dispatch)=>{
 			dispatch(actionCreator.getEditorChangeAction(content))
 		},
 		handleSubmit(){
-			dispatch(actionCreator.getSubmitAction())
+			const currentTime = new Date().toLocaleString('en-CA');
+			dispatch(actionCreator.getSubmitAction(currentTime))
 		},
 		handleItemDelete(key){
 			dispatch(actionCreator.getDeleteAction(key))
 		},
 		initMessageList(){
 			dispatch(actionCreator.getMessageList())
-			console.log(this.props+"bbb")
 		}
 	}
 }

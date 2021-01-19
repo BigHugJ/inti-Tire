@@ -15,7 +15,10 @@ export default (state= defaultState,action )=>{
 	
 	if(action.type===constants.ADD_MESSAGE_LIST){
 		const newState = JSON.parse(JSON.stringify(state))
-		newState.list.push(newState.inputValue)
+		const newMsg = {}
+		newMsg.sentTime = action.sentTime
+		newMsg.content = newState.inputValue
+		newState.list.push(newMsg)
 		newState.inputValue=""
 		return newState
 	}
