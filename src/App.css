@@ -3,6 +3,7 @@
 }
 .container{
 	width:1400px;
+	padding:50px;
 }
 
 .cardStyle{
@@ -13,4 +14,17 @@
 .jumbotron{
 	margin:0px;
 	padding:0px;
+}
+.circular--squareP{
+    border-radius:50%!important;
+    overflow:hidden
+}
+.header{
+	white-space:nowrap;
+	
+}
+
+
+.headerDropDown{
+	background-color:black;
 }

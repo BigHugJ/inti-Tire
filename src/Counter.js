@@ -1,16 +1,20 @@
-import Badge from 'react-bootstrap/Badge'
+import {Badge, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
+import {useState} from 'react';
 
 const OnlineButtons = (props) => {
   console.log("online people:")
-  if (props.receivers) {
-    console.log(props.receivers)
+  const [value, setValue] = useState(['']);
 
+  if (props.receivers.length > 1) {
+    console.log(props.receivers)
     const rs =props.receivers.map((receiver, index) => {
-	  console.log(receiver)
-	  return <Badge pill variant="primary">{receiver}</Badge>
+	  if (props.User === receiver)
+	    return ''
+	  else
+	    return <ToggleButton variant="warning" size="sm" value={receiver} >{receiver}</ToggleButton> 
     })
   
-    return rs
+    return <ToggleButtonGroup type="checkbox" value={value} onChange={props.connectToReceiver}>{rs}</ToggleButtonGroup>
   }
   else
     return  <Badge pill variant="danger">No one</Badge>
@@ -21,7 +25,7 @@ const CounterBadge = (props) => {
 	const totalMessages = props.totalMessages
 	const isLoggedIn = props.isLoggedIn
 	const receivers = props.receivers
-	
+
 	console.log("CounterBadge:")
     console.log(props.receivers)
 
@@ -31,7 +35,7 @@ const CounterBadge = (props) => {
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
 		  <Badge pill variant="primary">You: {User}</Badge>{' '}
 		  <Badge pill variant="primary">online: </Badge>{' '}
-		  <OnlineButtons receivers={receivers} />
+		  <OnlineButtons receivers={receivers} connectToReceiver={props.connectToReceiver} User={User}/>
 		</div>
 	  )
 	else 
@@ -40,7 +44,7 @@ const CounterBadge = (props) => {
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
 		  <Badge pill variant="danger">You: {User}</Badge>{' '}
 		  <Badge pill variant="primary">receivers: </Badge>
-		  <OnlineButtons receivers={receivers} />
+		  <OnlineButtons receivers={receivers} connectToReceiver={props.connectToReceiver} User={User}/>
 		</div>
 	  )
 		
@@ -49,7 +53,7 @@ const CounterBadge = (props) => {
 const Counters = (props) => {
   const { totalMessages, loginUser, isLoggedIn, receivers } = props;
   return (
-	<CounterBadge totalMessages={totalMessages} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers}/>
+	<CounterBadge totalMessages={totalMessages} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers} connectToReceiver={props.connectToReceiver}/>
   )
 }
 export default Counters;
