@@ -1,45 +1,33 @@
 import React, {Component} from 'react';
-import {Form, Button} from 'react-bootstrap'
+import {InputGroup, FormControl, Input} from 'react-bootstrap'
 
 class MessageEditor extends Component {
-  initialState = {
-    message: '',
-    sender: 'Me'
+  constructor() {
+    super();
+    this.state = {
+      message: ''
+    };
+    this.onKeyUp = this.onKeyUp.bind(this);	  
   }
 
-  state = this.initialState;
-
-  handleChange = event => {
-    const { name, value } = event.target;
-
-    this.setState({
-      [name] : value
-    });
+  onKeyUp(event) {
+    if (event.charCode === 13) {
+	  console.log("keyup")
+	  this.props.sendMessage(event.target.value);
+	  event.target.value=''
+	  this.setState({message: ''})
+    }
   }
-
-  onFormSubmit = (event) => {
-    event.preventDefault();
-        
-    this.props.handleSubmit(this.state);
-    this.props.sendMessage(this.state.message);
-
-    this.setState(this.initialState);
-  }
-
+  
   render() {
     const {message} = this.state; 
 
     return (
-	  <Form onSubmit={this.onFormSubmit}>
-		<Form.Group id="message">
-		  <Form.Control size="sm" as="textarea" name= "message" 
-          id= "name"
-          value={message}  onChange={this.handleChange}/>
-		</Form.Group>
-		<Button variant="primary" type="submit" disabled={!this.state.message}>
-		  Submit
-		</Button>
-	  </Form>
+	  <div>
+        <InputGroup>
+          <FormControl placeholder={message} onKeyPress={this.onKeyUp} />
+        </InputGroup>
+      </div>
     )
   }
 }
