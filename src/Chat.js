@@ -10,40 +10,70 @@ import * as messageTypes from './SockConstants'
 class Chat extends Component {
   state = {
    isConnected: false,
-   currentReceiver: '',
+   currentEndpoint: '',
    receiverList:[],
    messageCount: 0,
    messages: []
   }
-  sockjs = new SockJS(messageTypes._SOCK_SERVER);
-  stompClient = Stomp.over(this.sockjs);
   
+  sockjs = new SockJS(messageTypes._SOCK_SERVER_EXTERNAL);	 
+  stompClient = Stomp.over(this.sockjs);
+
   onError = (error) => {
 	console.log(error)
   }
-  
+
   componentDidMount() {
-	console.log('Did mount')
-	this.stompClient.connect({}, (frame) => {	
-	  console.log('connect')
-	})
+	console.log('DID mount <><><><><><><><>')
+  	  this.stompClient.connect({}, (frame) => {	
+	    console.log('STOMP connected')
+	  }, (error)=>{console.log("STOMP error"+ error)})
+	   
+    this.interval = setInterval(
+	  () => {this.setStatusCheck()}, 
+      2000
+     )
+  }
+	
+  setStatusCheck = () => {
+  
+	if (this.state.isConnected === false) {  
+	  if (this.sockjs.readyState === messageTypes._SOCKET_CLOSED) {
+		this.stompClient.disconnect()
+		this.sockjs.close()  
+	    console.log("switch to internal<><><><><><><>")	
+	    this.sockjs = new SockJS(messageTypes._SOCK_SERVER)
+		this.stompClient = Stomp.over(this.sockjs);
+		this.stompClient.connect({}, (frame) => {	
+	    console.log('STOMP connected')
+	    }, (error)=>{console.log("STOMP error"+ error)})
+	  }
+	  
+	  this.handleConnect()
+	} 
   }
   
   componentWillUnmount() {
 	console.log('Unmount')  
+	  clearInterval(this.interval);
+
 	this.sockjs.close()  
     this.stompClient.disconnect()
   }
   
   handleConnect = () => {
-	  
+	console.log('handleConnect<><><><><><><>')
+
 	if (this.sockjs.readyState === messageTypes._SOCKET_READY) {  
+
+	
 	  this.setState({isConnected:true})
 	  console.log('connection is Ready. State:' + this.sockjs.readyState)
-	  
+
+
 	  this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+this.props.loginUser, (payload) => {
 	    var respMessage = JSON.parse(payload.body);
-		  	     
+		console.log("connected<><><>"+respMessage.message)	  	     
 		if (respMessage.message === messageTypes._STATUS_ONLINE) {
 		  if ( this.state.receiverList === undefined) {
 		    var a = [respMessage.messageSender]
@@ -56,22 +86,28 @@ class Chat extends Component {
 		  }
 		} 
 		else if (respMessage.message === messageTypes._CHAT_REQUEST) {
-		  this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+respMessage.messageReceiver+this.props.loginUser, (pload) => {
+		  this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+respMessage.messageReceiver, (pload) => {
 			var respMsg = JSON.parse(pload.body);
-			this.setState({messages: [...this.state.messages, respMsg.message]})		  
+			this.setState({messages: [...this.state.messages, respMsg]})		  
 		  })	
 		}
 	    else {
 		  if (respMessage.messageReceiver) {
 		    var rList = respMessage.messageReceiver.split(",")
 		    this.sendNotificationToOnlineReceives(rList)
-		  }
-	        console.log(respMessage.message)  
-		  
+		  }		  
 		  this.setState({receiverList: rList})
 	    }
 	  })
-		
+	  
+	  this.stompClient.subscribe(messageTypes._MESSAGE_DEST_BROADCASTUSERS, (payload) => {
+	    var respMessage = JSON.parse(payload.body);
+		if (respMessage.messageReceiver) {
+		  var rArray = respMessage.messageReceiver.split(",")
+	      this.setState({receiverList: rArray})
+		}
+	  })
+	  
 	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDUSER, {}, JSON.stringify({
 			name: this.props.loginUser,
 			onlineStatus: messageTypes._STATUS_ONLINE
@@ -86,7 +122,7 @@ class Chat extends Component {
   sendNotificationToOnlineReceives = (rList) => {
     rList.forEach(r => {
 		console.log("notify:"+r)
-		this.stompClient.send(messageTypes._CHAT_TOPIC_PREFIX+r, {}, JSON.stringify({
+		this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG+r, {}, JSON.stringify({
 				messageSender: this.props.loginUser,
 				messageReceiver: r,
 				message: messageTypes._STATUS_ONLINE
@@ -125,17 +161,26 @@ class Chat extends Component {
 	this.setState({messageCount: mCount})
   }
   
-  connectToReceiver = (receiver) => {
-    console.log("connectToReceiver****"+receiver)
-	this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+this.props.loginUser+receiver,(payload) => {
+  connectToReceiver = (chatters) => {
+	var receivers = chatters.join('')
+    console.log("connectToReceiver**** "+chatters)
+	console.log("after join:"+receivers)
+	
+	var endpoint = this.props.loginUser+receivers
+	this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+endpoint,(payload) => {
 	  var respMessage = JSON.parse(payload.body);
-	  this.setState({messages: [...this.state.messages, respMessage.message]})
+	  this.setState({messages: [...this.state.messages, respMessage]})
 	})
-	this.stompClient.send(messageTypes._CHAT_TOPIC_PREFIX+receiver, {}, JSON.stringify({
+	
+	chatters.forEach(r=> {
+	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDCHANNEL, {}, JSON.stringify({
 				messageSender: this.props.loginUser,
-				messageReceiver: receiver,
-				message: messageTypes._CHAT_REQUEST
+				messageReceiver: r,
+				message: endpoint
 			}))
+	})
+	
+	this.setState({currentEndpoint:endpoint})
   }
   
   render() {
@@ -156,9 +201,6 @@ class Chat extends Component {
 		  <Row key='2' className="mb-2">
 		    <Col>
 			  <Counters loginUser={loginUser} totalMessages={messageCount} isLoggedIn={isLoggedIn} receivers={receivers} connectToReceiver={this.connectToReceiver} />
-			</Col>
-			<Col>
-			  <Button size="sm" variant="success" onClick={this.handleConnect} disabled={this.state.isConnected}>Connect</Button>
 			</Col>
 			</Row>
 			<Row key='3' className="mb-0" >
