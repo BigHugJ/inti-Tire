@@ -5,7 +5,6 @@ import {Container, Badge, Jumbotron, Row, Col, Button} from 'react-bootstrap'
 import Counters from './Counter'
 import SockJS from "sockjs-client"
 import Stomp from "stompjs"
-import MainTab from './MainTab'
 import * as messageTypes from './SockConstants'
 
 class Chat extends Component {
