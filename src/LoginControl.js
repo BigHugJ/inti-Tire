@@ -3,7 +3,7 @@ import { Container, Button, Jumbotron,InputGroup,FormControl,Card } from 'react-
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Image from 'react-bootstrap/Image'
-import MainTab from './MainTab'
+import Header from './header'
 import axios from 'axios';
 import { Router,Link, Route} from 'react-router-dom'
 
@@ -43,6 +43,12 @@ class LoginControl extends React.Component {
 	  this.setState({ show: false });  
 	  
   }
+  
+  
+  handleLogout = () => {
+	  this.setState({loginUser:'',isLoggedIn:false});
+  }
+  
   handlePasswordChange(e){
 	  this.setState({password:e.target.value});
   }
@@ -111,8 +117,7 @@ class LoginControl extends React.Component {
       )
 	}
 	else {
-		console.log(this.state.loginUser);
-		return <MainTab loginUser={loginUser} isLoggedIn={isLoggedIn} sendMessage={this.sendMessage} />
+		return <Header loginUser={loginUser} userAvatar={this.state.loginUserAvatar} logout={this.handleLogout} isLoggedIn={isLoggedIn} sendMessage={this.sendMessage} />
 	}
   }
 }

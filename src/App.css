@@ -3,6 +3,7 @@
 }
 .container{
 	width:1400px;
+	padding:50px;
 }
 
 .cardStyle{
@@ -22,10 +23,8 @@
 	white-space:nowrap;
 	
 }
-ul{
-	float:left;
-	color:white;
-	margin:0px;
-	padding-left:0px;
-	display:block;
+
+
+.headerDropDown{
+	background-color:black;
 }

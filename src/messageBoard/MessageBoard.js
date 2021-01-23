@@ -33,6 +33,7 @@ class MessageBoard extends React.Component{
 	render(){ 
 		const { inputValue, list } = this.props;
 		return(
+				<div class="container">
 			<div>
 					{this.getCardItem()}
 				 <br/>
@@ -43,6 +44,7 @@ class MessageBoard extends React.Component{
 				}} setContents={inputValue} onChange={this.props.handleEditorChange}/>
 				   <br/>
 				   <Button onClick={this.props.handleSubmit} >post</Button>&nbsp;&nbsp;
+			</div>
 			</div>
 		);
 	}
