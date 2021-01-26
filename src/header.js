@@ -36,7 +36,7 @@ export default class Header extends React.Component{
 						<span style={{ paddingLeft:'60px'}} ><b><Link  style={{ color:'white'}} to='/chat'>Chat</Link> </b></span>
 						<span style={{ padding:'60px'}} ><b><Link  style={{ color:'white'}} to='/messageBoard'>Message Board</Link> </b></span>
 					</div>
-					<DropdownButton title="temp" style={{float:'right',margin:'-25px 30px 0 0'}} variant="dark" className="headerDropDown" >
+					<DropdownButton title="" style={{float:'right',margin:'-25px 30px 0 0'}} variant="dark" className="headerDropDown" >
 						<Dropdown.Item onClick={()=>this.logOut()}>Log Out</Dropdown.Item>
 					</DropdownButton>
 					<Image style={{float:'right',margin:'-35px 15px 0 0'}} src={this.props.userAvatar} width="50px" height="50px" className="circular--squareP" />
