@@ -28,3 +28,6 @@
 .headerDropDown{
 	background-color:black;
 }
+.modal-backdrop {
+   opacity:1!important;
+}

@@ -1,7 +1,9 @@
 import ReactDOM from 'react-dom'
-import LoginControl from './LoginControl'
-import 'bootstrap/dist/css/bootstrap.min.css';
+import Login from './login'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { Provider } from 'react-redux'
+import store from './store'
+import React, {Component} from 'react'
 
 
-ReactDOM.render(<LoginControl /> , document.getElementById('root'))
-
+ReactDOM.render(<Provider store={store}><Login /></Provider>, document.getElementById('root'))

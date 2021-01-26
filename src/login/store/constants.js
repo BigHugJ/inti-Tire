@@ -1,0 +1,7 @@
+export const GET_USER_INFO = 'get_user_info'
+export const UPDATE_USERNAME = 'update_username'
+export const UPDATE_PASSWORD = 'update_password'
+export const HIDE_LOGINBOX = 'hide_loginbox'
+export const INIT_LIST = 'init_list' 
+export const UPDATE_LOGIN_STATE = 'update_loginstate' 
+export const LOGOUT='logout'

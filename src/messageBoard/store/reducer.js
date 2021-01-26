@@ -18,6 +18,7 @@ export default (state= defaultState,action )=>{
 		const newMsg = {}
 		newMsg.sentTime = action.sentTime
 		newMsg.content = newState.inputValue
+		newMsg.createBy = action.createBy
 		newState.list.push(newMsg)
 		newState.inputValue=""
 		return newState
@@ -29,7 +30,6 @@ export default (state= defaultState,action )=>{
 		return newState
 	}
 	
-
 	if(action.type===constants.INIT_LIST){
 		const newState = JSON.parse(JSON.stringify(state))
 		newState.list = action.list
