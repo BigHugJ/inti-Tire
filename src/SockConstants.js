@@ -9,6 +9,8 @@ export const _MESSAGE_DEST_BROADCASTUSERS = '/topic/broadcastUsers'
 export const _MESSAGE_DEST_ADDUSER = '/app/chatNewUser'
 export const _MESSAGE_DEST_SENDMSG = '/app/chatSendMessage'
 export const _MESSAGE_DEST_ADDCHANNEL = '/app/chatChannel'
-
+export const _MESSAGE_DEST_DELETEUSER = '/app/chatDeleteUser'
 export const _SOCKET_READY = 1
 export const _SOCKET_CLOSED = 3
+
+export const _MESSAGE__TIME_SPLITTER = 'time_split'
