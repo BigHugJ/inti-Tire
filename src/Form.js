@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {InputGroup, FormControl, Input} from 'react-bootstrap'
+import {InputGroup, FormControl} from 'react-bootstrap'
 
 class MessageEditor extends Component {
   constructor() {
@@ -12,7 +12,6 @@ class MessageEditor extends Component {
 
   onKeyUp(event) {
     if (event.charCode === 13) {
-	  console.log("keyup")
 	  this.props.sendMessage(event.target.value);
 	  event.target.value=''
 	  this.setState({message: ''})
