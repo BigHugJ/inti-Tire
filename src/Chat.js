@@ -7,12 +7,15 @@ import SockJS from "sockjs-client"
 import Stomp from "stompjs"
 import * as messageTypes from './SockConstants'
 import ReactDOM from 'react-dom'
+import MesssgeCard from './CardSample'
+import DivSample from './dviSample'
 
 class Chat extends Component {
   state = {
    isConnected: false,
    currentEndpoint: '',
    receiverList:[],
+   connectedList:[],
    messageCount: 0,
    messages: [],
    userId:null
@@ -46,9 +49,29 @@ class Chat extends Component {
     this.interval = setInterval(
 	  () => {this.setStatusCheck()}, 
       1000
-     )
+     ) 
   }
-	
+  
+  insertMessage = (msg) => {
+	var htmlmsg = ""
+	var imgName = ""
+	if (msg.messageSender === this.props.loginUser) {
+	  imgName = this.props.loginUser + ".jpg"
+	  htmlmsg="<div style=\"text-align:right;\"><span style=\"color:green\">" + msg.message + " " + "</span>" + "<Image src="+imgName +" width= \"40px\" height=\"40px\" style=border-radius:50% /></div>"	
+	}else if (msg.messageSender ===  messageTypes._MESSAGE__TIME_SPLITTER) {
+	  htmlmsg="<div style=\"text-align:center;color:SpringGreen\">" + "--- " + msg.message + " ---" + "<br/></div>"	
+	}
+	else {
+	  if (this.state.connectedList.length > 0) {
+	    imgName = this.state.connectedList[0]+ ".jpg";
+      }
+	  htmlmsg= "<div style=\"text-align:left;\"> <Image src="+imgName +" width= \"40px\" height=\"40px\" style=border-radius:50% />"+" " +  msg.message + "</div>"
+	}
+
+	document.getElementById('mCard').innerHTML += htmlmsg ;
+	document.getElementById('mCard').scrollTop = document.getElementById('mCard').scrollHeight - document.getElementById('mCard').clientHeight;
+  }	  
+  
   setStatusCheck = () => {
 	if (this.state.isConnected === false) {  
 	  if (this.sockjs.readyState === messageTypes._SOCKET_CLOSED) {
@@ -90,10 +113,14 @@ class Chat extends Component {
 	    var respMessage = JSON.parse(payload.body);
 		console.log("connected/subscribe/chat request<><><>"+respMessage.message)	  	     
 		if (respMessage.message === messageTypes._CHAT_REQUEST) {
-		  if (this.endpoint !== respMessage.messageReceiver) {	
+		  if (this.endpoint !== respMessage.messageReceiver) {
+			this.setState({connectedList:respMessage.messageSender.split()})
+
 		    this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+respMessage.messageReceiver, (pload) => {
 			  var respMsg = JSON.parse(pload.body);
-			  this.setState({messages: [...this.state.messages, respMsg]})		  
+			  this.insertMessage(respMsg)
+			  /*var newMessages = this.state.messages.splice(0,0, respMsg)
+			  this.setState({messaage: newMessages})	*/	  
 			  if (!this.isWindowFocused) {
 				document.title = "<<< MESSAGE COMING"
 			  }
@@ -121,29 +148,31 @@ class Chat extends Component {
 	}
 	else {
 	  this.setState({isConnected:false})
-	  console.log('connection is NOT ready. State:' + this.sockjs.readyState)
 	}
   }
   
   sendMessage = (chatmsg ) => {
-	console.log("state: "+this.sockjs.readyState)
 	if (this.sockjs.readyState === messageTypes._SOCKET_READY) {  
 	  if ((Date.now() - this.start) > (1000*60*5)) {
 		this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG, {}, JSON.stringify({
 				messageSender: messageTypes._MESSAGE__TIME_SPLITTER,
-				messageReceiver: this.props.loginUser === 'wolf'? 'bunny' : 'wolf',
-				message: new Date().toLocaleTimeString()
+				messageReceiver: '',
+				message: new Date(this.start).toLocaleTimeString()
 			})		
 		)
 		
-		this.start = Date.now()
 	  }
+	  this.start = Date.now()
+	  if (chatmsg === ";'") {
+	    document.getElementById('mCard').innerHTML = ""	  
+	  }
+	  else {
 	  this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG, {}, JSON.stringify({
 				messageSender: this.props.loginUser,
 				messageReceiver: this.props.loginUser === 'wolf'? 'bunny' : 'wolf',
 				message: chatmsg,
-			})
-	  )
+			}))
+	  }
 	}
 	
   }
@@ -160,7 +189,10 @@ class Chat extends Component {
 	this.currentEndpoint = endpoint
 	this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+endpoint,(payload) => {
 	  var respMessage = JSON.parse(payload.body);
-	  this.setState({messages: [...this.state.messages, respMessage]})
+	  /*var newMessages = this.state.messages.splice(0,0, respMessage)
+	  this.setState({messaage: newMessages})*/
+	  this.insertMessage(respMessage)
+	  
 	  if (!this.isWindowFocused) {
 	    document.title = "<<< MESSAGE COMING"
 	  }
@@ -174,6 +206,8 @@ class Chat extends Component {
 				message: endpoint
 			}))
 	  })
+	  this.setState({connectedList:receivers})
+
 	}
 	else {
 	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDCHANNEL, {}, JSON.stringify({
@@ -181,6 +215,8 @@ class Chat extends Component {
 				messageReceiver: receivers,
 				message: endpoint
 			}))	
+	  	  this.setState({connectedList:receivers.split()})
+
 	}
   }
   
@@ -190,31 +226,33 @@ class Chat extends Component {
 	const loginUser = this.props.loginUser;
 	const isLoggedIn = this.props.isLoggedIn;
 	const receivers = this.state.receiverList;
+	const connectedList = this.state.connectedList;
 	const isConnected = this.state.isConnected;
 	
 	return (
-	  <Container className="mb-0" style={{"height":"100%"}}>
-	    <Jumbotron>
-		  <Row key='1'>
-		    <Col>
-			  <h3><Badge variant="info">Chat-Chat</Badge></h3>
-			</Col>
-		  </Row>
-		  <Row key='2' className="mb-2">
+	  <Container className="mb-1"  >
+	    <Jumbotron style={{backgroundColor:'#e9ecef'}}>
+		 
+		  <Row  className="mb-2">
 		    <Col>
 			  <Counters loginUser={loginUser} isConnected={isConnected} totalMessages={messageCount} isLoggedIn={isLoggedIn} receivers={receivers} connectToReceiver={this.connectToReceiver} />
 			</Col>
 			</Row>
-			<Row key='3' className="mb-0" >
+			
+			<Row >
 			  <Col>
-				<MessageEditor sendMessage={this.sendMessage}/>
+			    <DivSample />
+				
 			  </Col>
 			</Row>
-			<Row key='4'>
+			<Row className="mb-0" >
 			  <Col>
-				<MessageTable
-				  messagesData={messages} loginUser={loginUser}
-				/>
+			  <br/>
+			  </Col>
+			</Row>	
+			<Row className="mb-0" >
+			  <Col>
+				<MessageEditor sendMessage={this.sendMessage}/>
 			  </Col>
 			</Row>
 		  </Jumbotron>
