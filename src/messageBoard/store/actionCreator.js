@@ -6,9 +6,10 @@ export const getEditorChangeAction = (content)=>({
 	value:content,
 })
 
-export const getSubmitAction = (sentTime)=>({
+export const getSubmitAction = (sentTime,createBy)=>({
 	type:constants.ADD_MESSAGE_LIST,
-	sentTime
+	sentTime,
+	createBy
 })
 
 export const getDeleteAction = (index)=>({
@@ -24,8 +25,6 @@ export const initListAction = (data)=>({
 export const getMessageList = ()=>{
 	return (dispatch)=>{
 		axios.get('../../data/messageList.json',{headers:{'content-type':'application/x-www-form-urlencoded'}}).then((res)=>{
-			
-			console.log(res.data.data.list+"wcq")
 			const action= initListAction(res.data.data.list);
 			dispatch(action);
 		})
