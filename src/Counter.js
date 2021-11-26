@@ -1,12 +1,10 @@
-import {Badge, Button, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
+import {Badge, ToggleButton, ToggleButtonGroup } from 'react-bootstrap'
 import {useState} from 'react';
 
 const OnlineButtons = (props) => {
-  console.log("online people:")
   const [value, setValue] = useState(['']);
 
   if (props.receivers.length > 1) {
-    console.log(props.receivers)
     const rs =props.receivers.map((receiver, index) => {
 	  if (props.User === receiver)
 	    return ''
@@ -25,11 +23,9 @@ const CounterBadge = (props) => {
 	const totalMessages = props.totalMessages
 	const isLoggedIn = props.isLoggedIn
 	const receivers = props.receivers
-
-	console.log("CounterBadge:")
-    console.log(props.receivers)
-
-	if (isLoggedIn)
+	const isConnected = props.isConnected
+	
+	if (isConnected)
 	  return (
 		<div>
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
@@ -42,7 +38,7 @@ const CounterBadge = (props) => {
 	  return (
 		<div>
 		  <Badge pill variant="primary">Total Messages: {totalMessages}</Badge>{' '}
-		  <Badge pill variant="danger">You: {User}</Badge>{' '}
+		  <Badge pill variant="info">connecting...</Badge>{' '}
 		  <Badge pill variant="primary">receivers: </Badge>
 		  <OnlineButtons receivers={receivers} connectToReceiver={props.connectToReceiver} User={User}/>
 		</div>
@@ -51,9 +47,9 @@ const CounterBadge = (props) => {
 }
 
 const Counters = (props) => {
-  const { totalMessages, loginUser, isLoggedIn, receivers } = props;
+  const { totalMessages, loginUser, isLoggedIn, receivers, isConnected } = props;
   return (
-	<CounterBadge totalMessages={totalMessages} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers} connectToReceiver={props.connectToReceiver}/>
+	<CounterBadge totalMessages={totalMessages} isConnected={isConnected} loginUser={loginUser} isLoggedIn={isLoggedIn} receivers= {receivers} connectToReceiver={props.connectToReceiver}/>
   )
 }
 export default Counters;

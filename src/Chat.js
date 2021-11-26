@@ -1,42 +1,78 @@
 import React, {Component} from 'react'
 import MessageTable from './Table'
 import MessageEditor from './Form'
-import {Container, Badge, Jumbotron, Row, Col, Button} from 'react-bootstrap'
+import {Container, Badge, Jumbotron, Row, Col} from 'react-bootstrap'
 import Counters from './Counter'
 import SockJS from "sockjs-client"
 import Stomp from "stompjs"
 import * as messageTypes from './SockConstants'
+import ReactDOM from 'react-dom'
+import MesssgeCard from './CardSample'
+import DivSample from './dviSample'
 
 class Chat extends Component {
   state = {
    isConnected: false,
    currentEndpoint: '',
    receiverList:[],
+   connectedList:[],
    messageCount: 0,
-   messages: []
+   messages: [],
+   userId:null
   }
   
+  currentEndpoint=''
+  start = Date.now();
+  isWindowFocused = true;
+    
   sockjs = new SockJS(messageTypes._SOCK_SERVER_EXTERNAL);	 
   stompClient = Stomp.over(this.sockjs);
-
-  onError = (error) => {
-	console.log(error)
+	
+  onFocus = () => {
+	this.isWindowFocused = true;  
+    document.title = "NO NEW MESSAGES"  
   }
-
+  
+  onBlur = () => {
+	this.isWindowFocused = false;
+  }
+  
   componentDidMount() {
-	console.log('DID mount <><><><><><><><>')
-  	  this.stompClient.connect({}, (frame) => {	
+	document.title = "chat-chat"  
+	window.addEventListener('focus', this.onFocus);
+	window.addEventListener('blur', this.onBlur);
+
+  	this.stompClient.connect({}, (frame) => {	
 	    console.log('STOMP connected')
 	  }, (error)=>{console.log("STOMP error"+ error)})
 	   
     this.interval = setInterval(
 	  () => {this.setStatusCheck()}, 
-      2000
-     )
+      1000
+     ) 
   }
-	
-  setStatusCheck = () => {
   
+  insertMessage = (msg) => {
+	var htmlmsg = ""
+	var imgName = ""
+	if (msg.messageSender === this.props.loginUser) {
+	  imgName = this.props.loginUser + ".jpg"
+	  htmlmsg="<div style=\"text-align:right;\"><span style=\"color:green\">" + msg.message + " " + "</span>" + "<Image src="+imgName +" width= \"40px\" height=\"40px\" style=border-radius:50% /></div>"	
+	}else if (msg.messageSender ===  messageTypes._MESSAGE__TIME_SPLITTER) {
+	  htmlmsg="<div style=\"text-align:center;color:SpringGreen\">" + "--- " + msg.message + " ---" + "<br/></div>"	
+	}
+	else {
+	  if (this.state.connectedList.length > 0) {
+	    imgName = this.state.connectedList[0]+ ".jpg";
+      }
+	  htmlmsg= "<div style=\"text-align:left;\"> <Image src="+imgName +" width= \"40px\" height=\"40px\" style=border-radius:50% />"+" " +  msg.message + "</div>"
+	}
+
+	document.getElementById('mCard').innerHTML += htmlmsg ;
+	document.getElementById('mCard').scrollTop = document.getElementById('mCard').scrollHeight - document.getElementById('mCard').clientHeight;
+  }	  
+  
+  setStatusCheck = () => {
 	if (this.state.isConnected === false) {  
 	  if (this.sockjs.readyState === messageTypes._SOCKET_CLOSED) {
 		this.stompClient.disconnect()
@@ -54,50 +90,46 @@ class Chat extends Component {
   }
   
   componentWillUnmount() {
-	console.log('Unmount')  
-	  clearInterval(this.interval);
+	console.log('Unmount, delete user:' + this.state.userId)  
+	
+	this.stompClient.send(messageTypes._MESSAGE_DEST_DELETEUSER, {}, JSON.stringify({
+	  name: this.props.loginUser,
+	  id: this.state.userId
+	}))
+	  
+	clearInterval(this.interval);
 
 	this.sockjs.close()  
     this.stompClient.disconnect()
   }
   
   handleConnect = () => {
-	console.log('handleConnect<><><><><><><>')
-
 	if (this.sockjs.readyState === messageTypes._SOCKET_READY) {  
-
 	
 	  this.setState({isConnected:true})
 	  console.log('connection is Ready. State:' + this.sockjs.readyState)
 
-
 	  this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+this.props.loginUser, (payload) => {
 	    var respMessage = JSON.parse(payload.body);
-		console.log("connected<><><>"+respMessage.message)	  	     
-		if (respMessage.message === messageTypes._STATUS_ONLINE) {
-		  if ( this.state.receiverList === undefined) {
-		    var a = [respMessage.messageSender]
-			this.setState({receiverList: a});
+		console.log("connected/subscribe/chat request<><><>"+respMessage.message)	  	     
+		if (respMessage.message === messageTypes._CHAT_REQUEST) {
+		  if (this.endpoint !== respMessage.messageReceiver) {
+			this.setState({connectedList:respMessage.messageSender.split()})
+
+		    this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+respMessage.messageReceiver, (pload) => {
+			  var respMsg = JSON.parse(pload.body);
+			  this.insertMessage(respMsg)
+			  /*var newMessages = this.state.messages.splice(0,0, respMsg)
+			  this.setState({messaage: newMessages})	*/	  
+			  if (!this.isWindowFocused) {
+				document.title = "<<< MESSAGE COMING"
+			  }
+		    })	
 		  }
-		  else {
-			let a = this.state.receiverList.slice(); //creates the clone of the state
-			a[a.length()] = respMessage.messageSender;
-			this.setState({receiverList: a});	
-		  }
-		} 
-		else if (respMessage.message === messageTypes._CHAT_REQUEST) {
-		  this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+respMessage.messageReceiver, (pload) => {
-			var respMsg = JSON.parse(pload.body);
-			this.setState({messages: [...this.state.messages, respMsg]})		  
-		  })	
+		} else if (respMessage.name === this.props.loginUser) {
+			this.setState({userId: respMessage.id})
 		}
-	    else {
-		  if (respMessage.messageReceiver) {
-		    var rList = respMessage.messageReceiver.split(",")
-		    this.sendNotificationToOnlineReceives(rList)
-		  }		  
-		  this.setState({receiverList: rList})
-	    }
+	    
 	  })
 	  
 	  this.stompClient.subscribe(messageTypes._MESSAGE_DEST_BROADCASTUSERS, (payload) => {
@@ -111,76 +143,81 @@ class Chat extends Component {
 	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDUSER, {}, JSON.stringify({
 			name: this.props.loginUser,
 			onlineStatus: messageTypes._STATUS_ONLINE
-		  }))
+	  }))
+	  
 	}
 	else {
 	  this.setState({isConnected:false})
-	  console.log('connection is NOT ready. State:' + this.sockjs.readyState)
 	}
   }
   
-  sendNotificationToOnlineReceives = (rList) => {
-    rList.forEach(r => {
-		console.log("notify:"+r)
-		this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG+r, {}, JSON.stringify({
-				messageSender: this.props.loginUser,
-				messageReceiver: r,
-				message: messageTypes._STATUS_ONLINE
-			})
-	)})
-  }
-  
   sendMessage = (chatmsg ) => {
-	console.log("state: "+this.sockjs.readyState)
 	if (this.sockjs.readyState === messageTypes._SOCKET_READY) {  
-  
-      console.log("Sender: " + this.props.loginUser)
+	  if ((Date.now() - this.start) > (1000*60*5)) {
+		this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG, {}, JSON.stringify({
+				messageSender: messageTypes._MESSAGE__TIME_SPLITTER,
+				messageReceiver: '',
+				message: new Date(this.start).toLocaleTimeString()
+			})		
+		)
+		
+	  }
+	  this.start = Date.now()
+	  if (chatmsg === ";'") {
+	    document.getElementById('mCard').innerHTML = ""	  
+	  }
+	  else {
 	  this.stompClient.send(messageTypes._MESSAGE_DEST_SENDMSG, {}, JSON.stringify({
 				messageSender: this.props.loginUser,
 				messageReceiver: this.props.loginUser === 'wolf'? 'bunny' : 'wolf',
 				message: chatmsg,
-			})
-	  )
+			}))
+	  }
 	}
-	else {
-	  this.setState({messages: [...this.state.messages, chatmsg]})	
-	}
-  }
-
-  removeMessage = index => {
-    const { messages } = this.state;
-    
-    this.setState({
-      messages: messages.filter((message, i) => { 
-        return i !== index;
-      })
-    });
-  }
-  
-  calculateMessagCount = (mCount) => {
-	this.setState({messageCount: mCount})
+	
   }
   
   connectToReceiver = (chatters) => {
 	var receivers = chatters.join('')
-    console.log("connectToReceiver**** "+chatters)
 	console.log("after join:"+receivers)
 	
 	var endpoint = this.props.loginUser+receivers
+
+	if (this.currentEndpoint === endpoint) {
+	  return
+	}
+	this.currentEndpoint = endpoint
 	this.stompClient.subscribe(messageTypes._CHAT_TOPIC_PREFIX+endpoint,(payload) => {
 	  var respMessage = JSON.parse(payload.body);
-	  this.setState({messages: [...this.state.messages, respMessage]})
+	  /*var newMessages = this.state.messages.splice(0,0, respMessage)
+	  this.setState({messaage: newMessages})*/
+	  this.insertMessage(respMessage)
+	  
+	  if (!this.isWindowFocused) {
+	    document.title = "<<< MESSAGE COMING"
+	  }
 	})
 	
-	chatters.forEach(r=> {
-	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDCHANNEL, {}, JSON.stringify({
+	if (Array.isArray(receivers)) {
+	  receivers.forEach(r=> {
+	    this.stompClient.send(messageTypes._MESSAGE_DEST_ADDCHANNEL, {}, JSON.stringify({
 				messageSender: this.props.loginUser,
 				messageReceiver: r,
 				message: endpoint
 			}))
-	})
-	
-	this.setState({currentEndpoint:endpoint})
+	  })
+	  this.setState({connectedList:receivers})
+
+	}
+	else {
+	  this.stompClient.send(messageTypes._MESSAGE_DEST_ADDCHANNEL, {}, JSON.stringify({
+				messageSender: this.props.loginUser,
+				messageReceiver: receivers,
+				message: endpoint
+			}))	
+	  	  this.setState({connectedList:receivers.split()})
+
+	}
   }
   
   render() {
@@ -189,30 +226,33 @@ class Chat extends Component {
 	const loginUser = this.props.loginUser;
 	const isLoggedIn = this.props.isLoggedIn;
 	const receivers = this.state.receiverList;
+	const connectedList = this.state.connectedList;
+	const isConnected = this.state.isConnected;
 	
 	return (
-	  <Container className="mb-0" style={{"height":"100%"}}>
-	    <Jumbotron>
-		  <Row key='1'>
+	  <Container className="mb-1"  >
+	    <Jumbotron style={{backgroundColor:'#e9ecef'}}>
+		 
+		  <Row  className="mb-2">
 		    <Col>
-			  <h3><Badge variant="info">Chat-Chat</Badge></h3>
-			</Col>
-		  </Row>
-		  <Row key='2' className="mb-2">
-		    <Col>
-			  <Counters loginUser={loginUser} totalMessages={messageCount} isLoggedIn={isLoggedIn} receivers={receivers} connectToReceiver={this.connectToReceiver} />
+			  <Counters loginUser={loginUser} isConnected={isConnected} totalMessages={messageCount} isLoggedIn={isLoggedIn} receivers={receivers} connectToReceiver={this.connectToReceiver} />
 			</Col>
 			</Row>
-			<Row key='3' className="mb-0" >
+			
+			<Row >
 			  <Col>
-				<MessageEditor sendMessage={this.sendMessage}/>
+			    <DivSample />
+				
 			  </Col>
 			</Row>
-			<Row key='4'>
+			<Row className="mb-0" >
 			  <Col>
-				<MessageTable
-				  messagesData={messages} loginUser={loginUser}
-				/>
+			  <br/>
+			  </Col>
+			</Row>	
+			<Row className="mb-0" >
+			  <Col>
+				<MessageEditor sendMessage={this.sendMessage}/>
 			  </Col>
 			</Row>
 		  </Jumbotron>
