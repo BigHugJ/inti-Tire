@@ -7,7 +7,7 @@ import Table from 'react-bootstrap/Table'
 const MsgDiv = (props) => {
  
   return (
-    <div id="mCard"  style={{border:"1px",overflow: "auto", width: '100%', height: '550px', backgroundColor:'#e9ecef',textAlign: "center"}}>
+    <div id="mCard"  style={{border:"1px",overflow: "auto", width: '100%', height: '500px', backgroundColor:'#e9ecef',textAlign: "center"}}>
 	
 	</div>
   )
